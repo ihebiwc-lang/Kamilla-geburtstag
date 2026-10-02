@@ -23,11 +23,23 @@ const FINAL_VIDEOS = [];
 let audioCtx = null;
 let soundOn = true;
 const soundBtn = document.getElementById('sound-btn');
+const bgMusic = document.getElementById('bg-music');
+bgMusic.volume = 0.5;
 soundBtn.addEventListener('click', () => {
   soundOn = !soundOn;
   soundBtn.textContent = soundOn ? '🔊' : '🔇';
   soundBtn.classList.toggle('off', !soundOn);
+  if (soundOn) { bgMusic.play().catch(()=>{}); }
+  else { bgMusic.pause(); }
 });
+// музыка стартует с первого касания (браузеры запрещают автоплей со звуком без жеста)
+let musicStarted = false;
+function startMusic() {
+  if (musicStarted || !soundOn) return;
+  musicStarted = true;
+  bgMusic.play().catch(()=>{ musicStarted = false; });
+}
+document.addEventListener('pointerdown', startMusic, { passive: true });
 function ac() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
