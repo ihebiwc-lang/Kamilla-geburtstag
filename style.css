@@ -118,8 +118,9 @@ body {
 
 #fly-zone { position: fixed; inset: 0; pointer-events: none; z-index: 40; }
 .poop-fly {
-  position: absolute; font-size: 52px; pointer-events: auto; cursor: pointer;
-  filter: drop-shadow(0 0 10px rgba(255,179,0,.8)) drop-shadow(0 6px 10px rgba(0,0,0,.5));
+  position: absolute; left: 0; top: 0; font-size: 52px; pointer-events: auto; cursor: pointer;
+  will-change: transform;
+  text-shadow: 0 2px 6px rgba(0,0,0,.5);
   user-select: none; line-height: 1;
 }
 .poop-fly:active { transform: scale(1.25); }

@@ -247,34 +247,33 @@ function spawnPoop(idx) {
   // fly-zone fixed, поэтому координаты относительно viewport:
   x = r.left + r.width / 2 - 26;
   let y = r.top + 60;
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
   el.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
   el.addEventListener('click', (e) => { e.stopPropagation(); openMemory(idx); });
   flyZone.appendChild(el);
   const angle = Math.random() * Math.PI * 2;
   const speed = 2 + Math.random() * 3.2;
-  flying.push({ el, idx, x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, rot: Math.random()*360 });
+  flying.push({ el, idx, x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, rot: Math.random() * 360 });
+  el.style.transform = `translate3d(${x | 0}px,${y | 0}px,0)`;
   if (!window._loopStarted) { window._loopStarted = true; requestAnimationFrame(loop); }
 }
 
+// размеры экрана кэшируем, а не читаем каждый кадр
+let viewW = window.innerWidth, viewH = window.innerHeight;
+window.addEventListener('resize', () => { viewW = window.innerWidth; viewH = window.innerHeight; });
+
 function loop() {
-  const W = window.innerWidth, H = window.innerHeight;
-  const t = Date.now();
-  flying.forEach(p => {
+  if (flying.length === 0) { window._loopStarted = false; return; }
+  const t = performance.now();
+  const maxX = viewW - 60, maxY = viewH - 60;
+  for (const p of flying) {
     p.x += p.vx; p.y += p.vy;
-    if (p.x < 0 || p.x > W - 60) p.vx *= -1;
-    if (p.y < 0 || p.y > H - 60) p.vy *= -1;
-    p.x = Math.max(0, Math.min(W - 60, p.x));
-    p.y = Math.max(0, Math.min(H - 60, p.y));
-    p.el.style.left = p.x + 'px';
-    p.el.style.top = p.y + 'px';
-    p.el.style.transform = `rotate(${(t / 18 + p.rot) % 360}deg)`;
-  });
+    if (p.x < 0) { p.x = 0; p.vx *= -1; } else if (p.x > maxX) { p.x = maxX; p.vx *= -1; }
+    if (p.y < 0) { p.y = 0; p.vy *= -1; } else if (p.y > maxY) { p.y = maxY; p.vy *= -1; }
+    // один transform вместо left/top — считает GPU, а не layout
+    p.el.style.transform = `translate3d(${p.x | 0}px,${p.y | 0}px,0) rotate(${(t / 28 + p.rot) % 360}deg)`;
+  }
   requestAnimationFrame(loop);
 }
-
-function renderDock() {
   dock.innerHTML = '';
   if (spawned === 0) { return; }
   for (let i = 0; i < spawned; i++) {
