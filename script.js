@@ -274,6 +274,8 @@ function loop() {
   }
   requestAnimationFrame(loop);
 }
+
+function renderDock() {
   dock.innerHTML = '';
   if (spawned === 0) { return; }
   for (let i = 0; i < spawned; i++) {
