@@ -29,15 +29,50 @@ soundBtn.addEventListener('click', () => {
   soundOn = !soundOn;
   soundBtn.textContent = soundOn ? '🔊' : '🔇';
   soundBtn.classList.toggle('off', !soundOn);
-  if (soundOn) { bgMusic.play().catch(()=>{}); }
-  else { bgMusic.pause(); }
+  if (soundOn) { musicStarted = false; startMusic(); }
+  else { musicStarted = false; stopMusic(); }
 });
-// музыка стартует с первого касания (браузеры запрещают автоплей со звуком без жеста)
+// музыка стартует с первого касания (браузеры запрещают автоплей со звуком без жеста).
+// Играем через WebAudio — так слышно даже в тихом режиме на айфоне; если не вышло — запасной <audio>.
 let musicStarted = false;
+let musicBuffer = null;
+let musicNodes = null;
+async function ensureMusic() {
+  if (musicBuffer) return true;
+  try {
+    const ctx = ac();
+    const res = await fetch('videos/music.mp3');
+    const ab = await res.arrayBuffer();
+    musicBuffer = await ctx.decodeAudioData(ab);
+    return true;
+  } catch (e) { return false; }
+}
+function stopMusic() {
+  try { musicNodes && musicNodes.src.stop(); } catch (e) {}
+  musicNodes = null;
+  try { bgMusic.pause(); } catch (e) {}
+}
 function startMusic() {
   if (musicStarted || !soundOn) return;
   musicStarted = true;
-  bgMusic.play().catch(()=>{ musicStarted = false; });
+  ensureMusic().then(ok => {
+    if (!soundOn) { musicStarted = false; return; }
+    if (ok) {
+      try {
+        const ctx = ac();
+        stopMusic();
+        const src = ctx.createBufferSource();
+        src.buffer = musicBuffer; src.loop = true;
+        const g = ctx.createGain(); g.gain.value = 0.5;
+        src.connect(g); g.connect(ctx.destination); src.start();
+        musicNodes = { src, g };
+      } catch (e) {
+        bgMusic.play().catch(() => { musicStarted = false; });
+      }
+    } else {
+      bgMusic.play().catch(() => { musicStarted = false; });
+    }
+  });
 }
 document.addEventListener('pointerdown', startMusic, { passive: true });
 function ac() {
