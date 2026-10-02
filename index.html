@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#14100c">
+<title>С ДНОМ РАЖДЭНИЯ КОМИЛА</title>
+<link rel="preload" as="image" href="assets/hedgehog-1.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<main class="page">
+  <header class="top">
+    <div class="top-right">
+      <div id="counter" class="counter">💩 0/5</div>
+      <button id="sound-btn" class="icon-btn" title="звук вкл/выкл">🔊</button>
+    </div>
+  </header>
+
+  <div id="progress" class="progress" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <p id="hint" class="hint">ТАПАЙ КАШОЛКА</p>
+
+  <section id="stage" class="stage">
+    <div class="neon-ring" aria-hidden="true"></div>
+    <div id="hedgehog-wrap" class="hedgehog-wrap" role="button" tabindex="0" aria-label="нажми на ёжика">
+      <img id="hedgehog" src="assets/hedgehog-1.png" alt="ёжик узбагойся" draggable="false" fetchpriority="high">
+      <div id="fallback-hedge" class="fallback-hedge">🦔</div>
+      <div id="hold-ring" class="hold-ring"></div>
+      <div id="tap-flash" class="tap-flash">💨</div>
+    </div>
+    <div id="hold-bar-wrap" class="hold-bar-wrap hidden">
+      <div id="hold-bar" class="hold-bar"></div>
+    </div>
+    <div id="hold-text" class="hold-text hidden">ЗАЖМИ ЭТАГА КРАСАВЦА</div>
+  </section>
+
+  <div id="fly-zone"></div>
+
+  <div id="dock" class="dock"></div>
+
+  <div id="after-boom" class="after-boom hidden">
+    <p class="boom-text">ТЫ НАХУЙ ЕГО УЕБАЛА ДУРА<br><span>Нажми на это 👇</span></p>
+    <img id="after-photo" src="assets/hedgehog-after.png" alt="что стало с ёжиком">
+  </div>
+
+  <div id="final" class="final hidden">
+    <h2>🎉 С ДНЬОМ РАЖДЄНІЯ КАКАШКА 🎉</h2>
+    <img id="final-photo" src="assets/final-photo.jpg" alt="финал">
+    <p id="final-text" class="final-text">
+      Тут будет твой текст поздравления.<br>
+      Скинь мне текст — и я вставлю ❤️
+    </p>
+    <div id="final-videos" class="final-videos"></div>
+    <button id="replay" class="btn">↻ начать заново</button>
+  </div>
+
+</main>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <button id="modal-close" class="modal-close">✕</button>
+    <h3 id="modal-title">Воспоминание</h3>
+    <video id="modal-video" controls playsinline preload="metadata"></video>
+    <img id="modal-photo" class="hidden" alt="воспоминание-фото">
+    <p id="modal-text"></p>
+    <button id="modal-ok" class="btn">ПАЙТИ СРАТЬ ДАЛЬШЕ</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
